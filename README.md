@@ -1,1 +1,1 @@
-# thecornerstonemasonry.github.io
+thecornerstonemasonry.github.io
