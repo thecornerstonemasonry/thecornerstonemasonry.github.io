@@ -3,9 +3,12 @@ html {
 }
 
 nav {
-  position: fixed;
-  top: 0;
-  width: 100%;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    justify-content: space-evenly;
+    align-items: center;
+    text-wrap: nowrap;
 }
 
 footer p {
