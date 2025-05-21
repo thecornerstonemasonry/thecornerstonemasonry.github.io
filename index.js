@@ -17,3 +17,13 @@ contactButton.addEventListener("click", function () {
     document.getElementById("email1").value = "";
     document.getElementById("message1").value = "";
 });
+
+/* Toggle between showing and hiding the navigation menu links when the user clicks on the hamburger menu / bar icon */
+function navFunction() {
+  var x = document.getElementById("myLinks");
+  if (x.style.display === "block") {
+    x.style.display = "none";
+  } else {
+    x.style.display = "block";
+  }
+}
