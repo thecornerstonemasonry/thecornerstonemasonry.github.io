@@ -8,7 +8,7 @@ nav {
  color: #fff;
 }
 
-.checkbtn {
+#navButton {
  display: none;
  font-size: 1.5rem;
  color: white;
