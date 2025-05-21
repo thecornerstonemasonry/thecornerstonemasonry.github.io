@@ -2,38 +2,6 @@ html {
   scroll-behavior: smooth;
 }
 
-nav {
- padding: 1.5rem 2rem;
- background-color: #222831;
- color: #fff;
-}
-
-.nav-mobile {
- display: none;
- position: absolute;
- top: 4.5rem;
- left: 0;
- background: #222831;
- z-index: 1;
- width: 200px;
-}
-
-.nav-mobile a {
- color: #fff;
- padding: 0.5rem 1rem;
- display: block;
-}
-
-#check:checked ~ .nav-mobile {
- display: block;
-}
-
-.checkbtn {
- font-size: 1.2rem;
- color: white;
- cursor: pointer;
-}
-
 footer p {
   size: 12px;
 }
