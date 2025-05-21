@@ -3,8 +3,10 @@ let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 if (!isMobile) {
   /* set navbar class to mobile one */
   /* alert("This website is tailored to mobile devices.") */
+   document.getElementById("myCheck").checked = true;
 } else {
   /* set navbar class to desktop one */
+   document.getElementById("myCheck").checked = true;
 }
 
 //Find the button using the getElement method
@@ -17,13 +19,3 @@ contactButton.addEventListener("click", function () {
     document.getElementById("email1").value = "";
     document.getElementById("message1").value = "";
 });
-
-/* Toggle between showing and hiding the navigation menu links when the user clicks on the hamburger menu / bar icon */
-function navFunction() {
-  var x = document.getElementById("myLinks");
-  if (x.style.display === "block") {
-    x.style.display = "none";
-  } else {
-    x.style.display = "block";
-  }
-}
