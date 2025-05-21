@@ -3,10 +3,8 @@ let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 if (!isMobile) {
   /* set navbar class to mobile one */
   /* alert("This website is tailored to mobile devices.") */
-   document.getElementById("myCheck").checked = true;
 } else {
   /* set navbar class to desktop one */
-   document.getElementById("myCheck").checked = true;
 }
 
 //Find the button using the getElement method
