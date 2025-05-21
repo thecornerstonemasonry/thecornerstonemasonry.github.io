@@ -2,6 +2,12 @@ html {
   scroll-behavior: smooth;
 }
 
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
 footer p {
   size: 12px;
 }
