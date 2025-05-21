@@ -8,6 +8,26 @@ nav {
  color: #fff;
 }
 
+.nav-mobile {
+ display: none;
+ position: absolute;
+ top: 4.5rem;
+ left: 0;
+ background: #222831;
+ z-index: 1;
+ width: 200px;
+}
+
+.nav-mobile a {
+ color: #fff;
+ padding: 1rem 1.5rem;
+ display: block;
+}
+
+#check:checked ~ .nav-mobile {
+ display: block;
+}
+
 .checkbtn {
  font-size: 1.5rem;
  color: white;
