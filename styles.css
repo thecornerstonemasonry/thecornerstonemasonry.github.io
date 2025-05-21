@@ -8,33 +8,10 @@ nav {
  color: #fff;
 }
 
-#navButton {
- display: none;
+.checkbtn {
  font-size: 1.5rem;
  color: white;
  cursor: pointer;
-}
-
-.nav-mobile {
- display: none;
-}
-
-#check:checked ~ .nav-mobile {
- display: block;
-}
-
-.nav-mobile {
- position: absolute;
- top: 4.5rem;
- left: 0;
- background: #222831;
- z-index: 1;
- width: 200px;
-}
-.nav-mobile a {
- color: #fff;
- padding: 1rem 1.5rem;
- display: block;
 }
 
 footer p {
