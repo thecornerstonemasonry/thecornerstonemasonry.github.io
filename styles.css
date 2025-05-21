@@ -20,7 +20,7 @@ nav {
 
 .nav-mobile a {
  color: #fff;
- padding: 1rem 1.5rem;
+ padding: 0.5rem 1rem;
  display: block;
 }
 
@@ -29,7 +29,7 @@ nav {
 }
 
 .checkbtn {
- font-size: 1.5rem;
+ font-size: 1.2rem;
  color: white;
  cursor: pointer;
 }
