@@ -14,6 +14,10 @@ nav {
  cursor: pointer;
 }
 
+.nav-mobile {
+ display: none;
+}
+
 footer p {
   size: 12px;
 }
