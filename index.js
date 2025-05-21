@@ -1,11 +1,10 @@
-let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+const hamburger = document.querySelector(".hamburger")
+const navMenu = document.querySelector(".nav-menu")
 
-if (!isMobile) {
-  /* set navbar class to mobile one */
-  /* alert("This website is tailored to mobile devices.") */
-} else {
-  /* set navbar class to desktop one */
-}
+hamburger.addEventListener("click", () => {
+  hamburger.classList.toggle("active");
+  navMenu.classList.toggle("active");
+})
 
 //Find the button using the getElement method
 var contactButton = document.getElementById("button1");
