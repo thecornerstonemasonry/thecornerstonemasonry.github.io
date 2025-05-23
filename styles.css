@@ -5,7 +5,7 @@
 }
 
 header {
-  background-color: #262626;
+  background-color: white;
 }
 
 li {
@@ -13,7 +13,7 @@ li {
 }
 
 a {
-  color: white;
+  color: maroon;
   text-decoration: none;
 }
 
@@ -41,7 +41,7 @@ a {
 }
 
 .nav-link:hover {
-  color: dodgerblue;
+  color: white;
 }
 
 .hamburger {
@@ -82,7 +82,7 @@ a {
   top: 70px;
   gap: 0;
   flex-direction: column;
-  background-color: #262626;
+  background-color: maroon;
   width: 100%;
   text-align: center;
   transition: 0.3s;
