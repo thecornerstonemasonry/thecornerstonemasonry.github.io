@@ -27,6 +27,10 @@ h2 {
   font-size: max(3vw, 25px);
 }
 
+p {
+  font-size: max(1.25vw, 15px);
+}
+
 .navbar {
   min-height: 70px;
   display: flex;
@@ -112,7 +116,7 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Style inputs with type="text", select elements and textareas */
+/* Style inputs with type="text", select elements and text areas */
 input[type=text], select, textarea {
   width: 100%; /* Full width */
   padding: 12px; /* Some padding */
@@ -146,6 +150,18 @@ input[type=submit]:hover {
   justify-self: center;
 }
 
+.imageFadeIn {
+  animation: fadeIn 5s;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
 footer p {
   text-align: center;
   font-size: 10px;
