@@ -18,6 +18,15 @@ a {
   text-decoration: none;
 }
 
+img {
+  width: 100vw;
+  height: 25vh;
+}
+
+h2 {
+  font-size: font-size: max(3vw, 25px);
+}
+
 .navbar {
   min-height: 70px;
   display: flex;
