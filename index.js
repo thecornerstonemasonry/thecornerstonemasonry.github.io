@@ -5,26 +5,40 @@ const navToggle = document.querySelector('.nav-toggle');
 const nav = document.querySelector('.primary-nav');
 const links = [...document.querySelectorAll('.nav-link')];
 
+let scrollLockY = 0;
+function lockScroll() {
+  scrollLockY = window.scrollY || document.documentElement.scrollTop || 0;
+  // lock the viewport at current position
+  body.style.position = 'fixed';
+  body.style.top = `-${scrollLockY}px`;
+  body.style.left = '0';
+  body.style.right = '0';
+  body.style.width = '100%';
+}
+function unlockScroll() {
+  // restore natural flow and scroll position
+  body.style.position = '';
+  body.style.top = '';
+  body.style.left = '';
+  body.style.right = '';
+  body.style.width = '';
+  window.scrollTo(0, scrollLockY);
+}
+
 function setNav(open){
   if(!nav || !navToggle) return;
+  if (open) lockScroll(); else unlockScroll();
   body.classList.toggle('nav-open', open);
   navToggle.setAttribute('aria-expanded', String(open));
   nav.setAttribute('aria-hidden', String(!open));
 }
-navToggle?.addEventListener('click', () => setNav(!body.classList.contains('nav-open')));
+
+navToggle?.addEventListener('click', (e) => {
+  e.preventDefault(); // belt & suspenders—avoid any default focus/scroll quirks
+  setNav(!body.classList.contains('nav-open'));
+});
 nav?.addEventListener('click', (e) => { if (e.target.closest('.nav-link')) setNav(false); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setNav(false); });
-
-// Auto-close dropdown if user starts scrolling (prevents odd positions)
-let closedOnScroll = false;
-window.addEventListener('scroll', () => {
-  if (body.classList.contains('nav-open')) {
-    setNav(false);
-    closedOnScroll = true;
-  } else if (closedOnScroll && window.scrollY < 4) {
-    closedOnScroll = false;
-  }
-}, { passive: true });
 
 // Header shadow after scroll
 const shadow = () => header?.classList.toggle('scrolled', window.scrollY > 4);
