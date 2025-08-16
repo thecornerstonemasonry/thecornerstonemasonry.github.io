@@ -1,4 +1,4 @@
-// ===== NAV =====
+// ===== NAV (compact dropdown) =====
 const body = document.body;
 const header = document.querySelector('.site-header');
 const navToggle = document.querySelector('.nav-toggle');
@@ -38,7 +38,7 @@ window.addEventListener('resize', () => {
   if (window.innerWidth >= 821 && body.classList.contains('nav-open')) setNav(false);
 }, { passive: true });
 
-// ===== BACK TO TOP (already anchors to #home) =====
+// ===== BACK TO TOP (anchors to #home) =====
 document.getElementById('back-to-top')?.addEventListener('click', () => {
   if (window.scrollY < 10) window.scrollTo({ top: 0, behavior: 'smooth' });
 });
@@ -55,16 +55,17 @@ document.getElementById('back-to-top')?.addEventListener('click', () => {
   let index = 0;
   let userInteracted = false;
 
-  // Scroll-snap: use scrollLeft math to determine index
-  function width(){ return viewport.clientWidth; }
-  function clamp(i){ return Math.max(0, Math.min(i, slides.length - 1)); }
-  function goTo(i){
+  // helpers
+  const width = () => viewport.clientWidth;
+  const clamp = (i) => Math.max(0, Math.min(i, slides.length - 1));
+  const goTo = (i) => {
     index = clamp(i);
     viewport.scrollTo({ left: index * width(), behavior: 'smooth' });
-  }
-  function next(){ goTo(index + 1); }
-  function prev(){ goTo(index - 1); }
+  };
+  const next = () => goTo(index + 1);
+  const prev = () => goTo(index - 1);
 
+  // Buttons
   nextBtn?.addEventListener('click', () => { userInteracted = true; next(); });
   prevBtn?.addEventListener('click', () => { userInteracted = true; prev(); });
 
@@ -74,13 +75,11 @@ document.getElementById('back-to-top')?.addEventListener('click', () => {
     if (e.key === 'ArrowLeft')  { userInteracted = true; prev(); }
   });
 
-  // Update index when user swipes/scrolls
-  let scrollTimer;
+  // Update index after user scrolls
+  let t;
   viewport.addEventListener('scroll', () => {
-    clearTimeout(scrollTimer);
-    scrollTimer = setTimeout(() => {
-      index = Math.round(viewport.scrollLeft / width());
-    }, 100);
+    clearTimeout(t);
+    t = setTimeout(() => { index = Math.round(viewport.scrollLeft / width()); }, 100);
   }, { passive: true });
 
   // Handle resize
@@ -89,15 +88,15 @@ document.getElementById('back-to-top')?.addEventListener('click', () => {
   // Auto-advance (respect reduced motion)
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let auto;
-  function startAuto(){
+  const startAuto = () => {
     if (prefersReduced) return;
     stopAuto();
     auto = setInterval(() => { if (!userInteracted) next(); }, 5000);
-  }
-  function stopAuto(){ if (auto) clearInterval(auto); }
+  };
+  const stopAuto = () => { if (auto) clearInterval(auto); };
   startAuto();
 
-  // Pause on hover/focus, resume on leave/blur
+  // Pause on hover/focus, resume on leave/blur, pause in background
   ['pointerenter', 'focusin'].forEach(ev => viewport.addEventListener(ev, stopAuto));
   ['pointerleave', 'focusout'].forEach(ev => viewport.addEventListener(ev, startAuto));
   document.addEventListener('visibilitychange', () => document.hidden ? stopAuto() : startAuto());
