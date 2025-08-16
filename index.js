@@ -11,27 +11,17 @@ function setNav(open){
   navToggle.setAttribute('aria-expanded', String(open));
   nav.setAttribute('aria-hidden', String(!open));
 }
-
 navToggle?.addEventListener('click', () => setNav(!body.classList.contains('nav-open')));
-
-// Close drawer when a nav link is clicked
-nav?.addEventListener('click', (e) => {
-  if (e.target.closest('.nav-link')) setNav(false);
-});
-
-// Close on Escape
+nav?.addEventListener('click', (e) => { if (e.target.closest('.nav-link')) setNav(false); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setNav(false); });
 
-// Add subtle shadow after scroll
+// Header shadow after scroll
 const shadow = () => header?.classList.toggle('scrolled', window.scrollY > 4);
 shadow();
 window.addEventListener('scroll', shadow, { passive: true });
 
 // Active link highlighting on scroll
-const sections = links
-  .map(a => document.querySelector(a.getAttribute('href')))
-  .filter(Boolean);
-
+const sections = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
 if (sections.length){
   const io = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -40,28 +30,84 @@ if (sections.length){
       links.forEach(a => a.classList.toggle('is-active', a.getAttribute('href') === id));
     });
   }, { rootMargin: '-45% 0px -50% 0px', threshold: 0.01 });
-
   sections.forEach(sec => io.observe(sec));
 }
 
-// Prevent body scroll jump when resizing from mobile to desktop with menu open
+// Close menu if resizing to desktop while open
 window.addEventListener('resize', () => {
   if (window.innerWidth >= 821 && body.classList.contains('nav-open')) setNav(false);
 }, { passive: true });
 
-// ===== Back-to-top =====
-// Footer link now targets #home, which is below the sticky header.
-// No JS required, but keep smooth UX if user is already near top.
+// ===== BACK TO TOP (already anchors to #home) =====
 document.getElementById('back-to-top')?.addEventListener('click', () => {
-  // If already near top, ensure a small scroll so users see feedback
   if (window.scrollY < 10) window.scrollTo({ top: 0, behavior: 'smooth' });
 });
+
+// ===== GALLERY (Carousel) =====
+(() => {
+  const viewport = document.getElementById('carousel');
+  if (!viewport) return;
+
+  const slides = [...viewport.querySelectorAll('.slide')];
+  const prevBtn = document.querySelector('.carousel-btn.prev');
+  const nextBtn = document.querySelector('.carousel-btn.next');
+
+  let index = 0;
+  let userInteracted = false;
+
+  // Scroll-snap: use scrollLeft math to determine index
+  function width(){ return viewport.clientWidth; }
+  function clamp(i){ return Math.max(0, Math.min(i, slides.length - 1)); }
+  function goTo(i){
+    index = clamp(i);
+    viewport.scrollTo({ left: index * width(), behavior: 'smooth' });
+  }
+  function next(){ goTo(index + 1); }
+  function prev(){ goTo(index - 1); }
+
+  nextBtn?.addEventListener('click', () => { userInteracted = true; next(); });
+  prevBtn?.addEventListener('click', () => { userInteracted = true; prev(); });
+
+  // Keyboard (when viewport has focus)
+  viewport.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { userInteracted = true; next(); }
+    if (e.key === 'ArrowLeft')  { userInteracted = true; prev(); }
+  });
+
+  // Update index when user swipes/scrolls
+  let scrollTimer;
+  viewport.addEventListener('scroll', () => {
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(() => {
+      index = Math.round(viewport.scrollLeft / width());
+    }, 100);
+  }, { passive: true });
+
+  // Handle resize
+  window.addEventListener('resize', () => goTo(index), { passive: true });
+
+  // Auto-advance (respect reduced motion)
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let auto;
+  function startAuto(){
+    if (prefersReduced) return;
+    stopAuto();
+    auto = setInterval(() => { if (!userInteracted) next(); }, 5000);
+  }
+  function stopAuto(){ if (auto) clearInterval(auto); }
+  startAuto();
+
+  // Pause on hover/focus, resume on leave/blur
+  ['pointerenter', 'focusin'].forEach(ev => viewport.addEventListener(ev, stopAuto));
+  ['pointerleave', 'focusout'].forEach(ev => viewport.addEventListener(ev, startAuto));
+  document.addEventListener('visibilitychange', () => document.hidden ? stopAuto() : startAuto());
+})();
 
 // ===== Year in footer =====
 const y = document.getElementById('year');
 if (y) y.textContent = new Date().getFullYear();
 
-// ===== (Optional) Form: placeholder UX only — we’ll wire later =====
+// ===== (Optional) Form UX placeholder =====
 const form = document.getElementById('contact-form');
 const note = document.getElementById('form-note');
 form?.addEventListener('submit', (e) => {
