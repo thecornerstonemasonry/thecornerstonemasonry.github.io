@@ -11,8 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
-  <!-- Cache-bust the stylesheet in case your host caches aggressively -->
-  <link rel="stylesheet" href="styles.css?v=3" />
+  <!-- Cache-bust to beat aggressive hosting caches -->
+  <link rel="stylesheet" href="styles.css?v=4" />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -92,8 +92,50 @@
       </div>
     </section>
 
+    <!-- GALLERY / RECENT WORK -->
+    <section id="gallery" class="section gallery" aria-label="Recent work">
+      <div class="wrapper">
+        <h2 class="section-title">Recent Work</h2>
+        <p class="small">Springfield • Chatham • Jacksonville</p>
+
+        <div class="carousel" role="region" aria-roledescription="carousel" aria-label="Corner Stone Masonry recent projects">
+          <div class="carousel-viewport" id="carousel" tabindex="0">
+            <!-- Slides (keep ratio consistent; swap file paths for your images) -->
+            <figure class="slide">
+              <img loading="lazy" src="images/gallery/01.jpg" alt="New brick steps with stone cap in Springfield, IL" />
+              <figcaption>Brick steps • Springfield</figcaption>
+            </figure>
+            <figure class="slide">
+              <img loading="lazy" src="images/gallery/02.jpg" alt="Stone veneer accent wall on entryway" />
+              <figcaption>Stone veneer entry • Chatham</figcaption>
+            </figure>
+            <figure class="slide">
+              <img loading="lazy" src="images/gallery/03.jpg" alt="Rebuilt chimney with new crown and cap" />
+              <figcaption>Chimney rebuild • Jacksonville</figcaption>
+            </figure>
+            <figure class="slide">
+              <img loading="lazy" src="images/gallery/04.jpg" alt="Tuckpointed brick facade before and after" />
+              <figcaption>Tuckpointing • Springfield</figcaption>
+            </figure>
+            <figure class="slide">
+              <img loading="lazy" src="images/gallery/05.jpg" alt="Block retaining wall with proper drainage" />
+              <figcaption>Retaining wall • Chatham</figcaption>
+            </figure>
+            <figure class="slide">
+              <img loading="lazy" src="images/gallery/06.jpg" alt="Concrete patio with clean broom finish" />
+              <figcaption>Concrete patio • Springfield</figcaption>
+            </figure>
+          </div>
+
+          <!-- Prev/Next controls -->
+          <button class="carousel-btn prev" aria-label="Previous slide" aria-controls="carousel">‹</button>
+          <button class="carousel-btn next" aria-label="Next slide" aria-controls="carousel">›</button>
+        </div>
+      </div>
+    </section>
+
     <!-- TESTIMONIALS -->
-    <section class="section testimonials" aria-label="Testimonials">
+    <section id="testimonials" class="section testimonials" aria-label="Testimonials">
       <div class="wrapper">
         <h2 class="section-title">What Customers Say</h2>
         <div class="quote">
@@ -116,7 +158,6 @@
           </ul>
         </div>
 
-        <!-- Keep the form simple for now; we’ll wire it later -->
         <form id="contact-form" novalidate>
           <div class="form-grid">
             <label class="sr-only" for="first">First name</label>
@@ -154,7 +195,6 @@
         <a href="#services">Services</a>
         <a href="#about">About</a>
         <a href="#contact">Contact</a>
-        <!-- Back-to-top now targets #home (NOT the sticky header) so it always scrolls -->
         <a href="#home" id="back-to-top">Back to top</a>
       </div>
     </div>
@@ -176,6 +216,6 @@
   </script>
 
   <noscript>Your browser has JavaScript disabled; navigation and form enhancements are limited.</noscript>
-  <script src="index.js?v=3" defer></script>
+  <script src="index.js?v=4" defer></script>
 </body>
 </html>
