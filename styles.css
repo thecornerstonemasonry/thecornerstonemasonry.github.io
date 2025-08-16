@@ -43,7 +43,10 @@ img{ max-width:100%; height:auto; display:block; }
   position: sticky; top:0; z-index:100; background:#fff; border-bottom:1px solid #eee;
 }
 .site-header.scrolled{ box-shadow: 0 6px 20px rgba(0,0,0,.06); }
+
+/* Make header a containing block for the dropdown */
 .nav-wrapper{
+  position: relative;                             /* <-- anchor dropdown here */
   display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:1rem; min-height: var(--header-h);
 }
 .brand{ display:inline-flex; align-items:center; gap:.6rem; color:var(--charcoal); text-decoration:none; font-weight:800; }
@@ -66,10 +69,10 @@ img{ max-width:100%; height:auto; display:block; }
 .nav-toggle span{ width:24px; height:2px; background:var(--charcoal); display:block; border-radius:2px; transition: transform .3s, opacity .3s; }
 .nav-toggle span:nth-child(2){ transform-origin:center; }
 
-/* ===== Mobile: COMPACT DROPDOWN (not full-screen) ===== */
+/* ===== Mobile: COMPACT DROPDOWN anchored to header ===== */
 @media (max-width: 820px){
   .primary-nav{
-    position: absolute; left:0; right:0; top: var(--header-h);
+    position: absolute; left:0; right:0; top: 100%;  /* directly under sticky header */
     background:#fff;
     border-top:1px solid #eee;
     box-shadow: 0 12px 24px rgba(0,0,0,.05);
@@ -79,7 +82,7 @@ img{ max-width:100%; height:auto; display:block; }
     transition: max-height .3s ease, opacity .2s ease, visibility .2s linear;
     z-index: 999;
   }
-  .primary-nav ul{ flex-direction:column; gap:.25rem; padding:.5rem 1rem 1rem; }
+  .primary-nav ul{ flex-direction:column; gap:.25rem; padding:.5rem 1rem 1rem; margin:0; }
   .primary-nav a{ padding:.85rem 1rem; border-radius:10px; }
 
   .nav-toggle{ display:grid; justify-self:end; }
@@ -88,10 +91,10 @@ img{ max-width:100%; height:auto; display:block; }
   body.nav-open .nav-toggle span:nth-child(2){ opacity: 0; }
   body.nav-open .nav-toggle span:nth-child(3){ transform: translateY(-6px) rotate(-45deg); }
 }
-/* Open state on mobile */
+/* Open state on mobile (auto-sizes to content but capped) */
 @media (max-width: 820px){
   body.nav-open .primary-nav{
-    max-height: calc(100svh - var(--header-h));  /* grows only as needed */
+    max-height: clamp(12rem, calc(100svh - var(--header-h)), 24rem);
     opacity:1; visibility:visible; pointer-events:auto;
   }
   body.nav-open{ overflow:hidden; } /* prevent page scroll when menu open */
@@ -164,7 +167,7 @@ img{ max-width:100%; height:auto; display:block; }
   border:none; background: rgba(255,255,255,.85); color:#111;
   display:grid; place-items:center; font-size:24px; line-height:1;
   cursor:pointer; box-shadow: var(--shadow);
-  transform: translateY(-50%);                         /* classic transform (no new translate:) */
+  transform: translateY(-50%);                         /* classic transform */
   -webkit-user-select:none; user-select:none;
 }
 .carousel-btn:hover{ background:#fff; }
