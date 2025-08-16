@@ -6,15 +6,19 @@
   <meta name="description" content="The Corner Stone Masonry LLC – Brick, stone, chimneys, tuckpointing, retaining walls, and concrete in Central Illinois." />
   <meta name="theme-color" content="#6e1b1b" />
   <title>The Corner Stone Masonry</title>
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Cache-bust the stylesheet in case your host caches aggressively -->
+  <link rel="stylesheet" href="styles.css?v=3" />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <header class="site-header" id="top">
+  <!-- Sticky header / nav -->
+  <header class="site-header">
     <div class="wrapper nav-wrapper">
       <a class="brand" href="#home" aria-label="The Corner Stone Masonry home">
         <svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18v-2H3v2Zm3-4h12v-2H6v2Zm-3-4h18V9H3v4Zm3-6h12V5H6v2Z"/></svg>
@@ -25,7 +29,7 @@
         <span></span><span></span><span></span>
       </button>
 
-      <nav id="primary-nav" class="primary-nav" aria-label="Primary">
+      <nav id="primary-nav" class="primary-nav" aria-label="Primary" aria-hidden="true">
         <ul>
           <li><a class="nav-link" href="#home">Home</a></li>
           <li><a class="nav-link" href="#about">About</a></li>
@@ -37,17 +41,17 @@
   </header>
 
   <main id="main">
-    <!-- Hero -->
+    <!-- HERO -->
     <section id="home" class="section hero" aria-label="Hero">
       <picture>
-        <!-- mobile-first image; replace with real images when ready -->
+        <!-- Swap these paths to your actual images -->
         <source media="(min-width: 1024px)" srcset="images/hero-large.jpg" />
-        <img src="images/hero-mobile.jpg" alt="Bricklayer placing a cornerstone" loading="eager" />
+        <img src="images/hero-mobile.jpg" alt="Bricklayer placing a cornerstone" />
       </picture>
       <div class="hero-overlay"></div>
       <div class="hero-content wrapper">
         <h1>Built to last. Done right.</h1>
-        <p>Family‑owned masonry craftsmanship—brick, stone, chimneys, tuckpointing, and concrete work across Central Illinois.</p>
+        <p>Family-owned masonry craftsmanship—brick, stone, chimneys, tuckpointing, and concrete work across Central Illinois.</p>
         <div class="hero-ctas">
           <a class="btn btn-primary" href="#contact">Get a Free Quote</a>
           <a class="btn btn-ghost" href="#services">See Our Services</a>
@@ -55,11 +59,11 @@
       </div>
     </section>
 
-    <!-- About -->
+    <!-- ABOUT -->
     <section id="about" class="section about" aria-label="About us">
       <div class="wrapper about-grid">
         <div class="about-media">
-          <img src="images/about.jpg" alt="Finished stone and brickwork close‑up" loading="lazy" />
+          <img src="images/about.jpg" alt="Finished stone and brickwork close-up" loading="lazy" />
         </div>
         <div class="about-copy">
           <h2>About Us</h2>
@@ -67,46 +71,28 @@
           <ul class="bullets">
             <li>Licensed & insured</li>
             <li>Residential & light commercial</li>
-            <li>Free, no‑pressure estimates</li>
+            <li>Free, no-pressure estimates</li>
           </ul>
         </div>
       </div>
     </section>
 
-    <!-- Services -->
+    <!-- SERVICES -->
     <section id="services" class="section services" aria-label="Services">
       <div class="wrapper">
         <h2 class="section-title">Services</h2>
         <div class="cards">
-          <article class="card">
-            <h3>Brickwork</h3>
-            <p>Walls, facades, steps, lintels, and arches with crisp joints and proper drainage.</p>
-          </article>
-          <article class="card">
-            <h3>Stone Veneer</h3>
-            <p>Natural or manufactured stone installations that elevate curb appeal and durability.</p>
-          </article>
-          <article class="card">
-            <h3>Chimneys & Fireplaces</h3>
-            <p>Rebuilds, crowns, caps, liners, and leak repairs to keep your home safe.</p>
-          </article>
-          <article class="card">
-            <h3>Tuckpointing & Repair</h3>
-            <p>Match mortar, stop water intrusion, and stabilize aging work the right way.</p>
-          </article>
-          <article class="card">
-            <h3>Retaining Walls</h3>
-            <p>Block and stone retaining walls built with proper base, drainage, and reinforcement.</p>
-          </article>
-          <article class="card">
-            <h3>Concrete & Pavers</h3>
-            <p>Sidewalks, patios, approaches, and paver installs with clean finishes.</p>
-          </article>
+          <article class="card"><h3>Brickwork</h3><p>Walls, facades, steps, lintels, and arches with crisp joints and proper drainage.</p></article>
+          <article class="card"><h3>Stone Veneer</h3><p>Natural or manufactured stone installations that elevate curb appeal and durability.</p></article>
+          <article class="card"><h3>Chimneys & Fireplaces</h3><p>Rebuilds, crowns, caps, liners, and leak repairs to keep your home safe.</p></article>
+          <article class="card"><h3>Tuckpointing & Repair</h3><p>Match mortar, stop water intrusion, and stabilize aging work the right way.</p></article>
+          <article class="card"><h3>Retaining Walls</h3><p>Block and stone retaining walls built with proper base, drainage, and reinforcement.</p></article>
+          <article class="card"><h3>Concrete & Pavers</h3><p>Sidewalks, patios, approaches, and paver installs with clean finishes.</p></article>
         </div>
       </div>
     </section>
 
-    <!-- Testimonials (optional content placeholder) -->
+    <!-- TESTIMONIALS -->
     <section class="section testimonials" aria-label="Testimonials">
       <div class="wrapper">
         <h2 class="section-title">What Customers Say</h2>
@@ -117,18 +103,20 @@
       </div>
     </section>
 
-    <!-- Contact -->
+    <!-- CONTACT -->
     <section id="contact" class="section contact" aria-label="Contact us">
       <div class="wrapper contact-grid">
         <div>
           <h2>Contact Us</h2>
           <p>Tell us a little about your project and the best way to reach you. We typically reply within one business day.</p>
           <ul class="contact-list">
-            <li><strong>Phone:</strong> <a href="tel:+12175550123">(217) 555‑0123</a></li>
+            <li><strong>Phone:</strong> <a href="tel:+12175550123">(217) 555-0123</a></li>
             <li><strong>Email:</strong> <a href="mailto:info@thecornerstonemasonry.net">info@thecornerstonemasonry.net</a></li>
             <li><strong>Hours:</strong> Mon–Fri 8–5</li>
           </ul>
         </div>
+
+        <!-- Keep the form simple for now; we’ll wire it later -->
         <form id="contact-form" novalidate>
           <div class="form-grid">
             <label class="sr-only" for="first">First name</label>
@@ -141,7 +129,7 @@
             <input id="email" name="email" type="email" placeholder="Email" required>
 
             <label class="sr-only" for="phone">Phone</label>
-            <input id="phone" name="phone" type="tel" placeholder="Phone" inputmode="tel" pattern="[0-9\-\+\(\) ]*">
+            <input id="phone" name="phone" type="tel" placeholder="Phone" inputmode="tel" pattern="[0-9\\-\\+\\(\\) ]*">
 
             <label class="sr-only" for="location">Project location</label>
             <input id="location" name="location" type="text" placeholder="Project location (city)">
@@ -166,20 +154,21 @@
         <a href="#services">Services</a>
         <a href="#about">About</a>
         <a href="#contact">Contact</a>
-        <a href="#top">Back to top</a>
+        <!-- Back-to-top now targets #home (NOT the sticky header) so it always scrolls -->
+        <a href="#home" id="back-to-top">Back to top</a>
       </div>
     </div>
   </footer>
 
-  <!-- LocalBusiness schema (fill in real address/phone) -->
+  <!-- LocalBusiness schema -->
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
     "@type":"LocalBusiness",
     "name":"The Corner Stone Masonry LLC",
     "url":"https://thecornerstonemasonry.net",
-    "telephone":"+1-217-816-0869",
-    "areaServed":"Springfield Illinois",
+    "telephone":"+1-217-555-0123",
+    "areaServed":"Central Illinois",
     "image":"https://thecornerstonemasonry.net/images/hero-large.jpg",
     "priceRange":"$$",
     "sameAs":["https://www.facebook.com/jesus.game.king/"]
@@ -187,6 +176,6 @@
   </script>
 
   <noscript>Your browser has JavaScript disabled; navigation and form enhancements are limited.</noscript>
-  <script src="index.js" defer></script>
+  <script src="index.js?v=3" defer></script>
 </body>
 </html>
