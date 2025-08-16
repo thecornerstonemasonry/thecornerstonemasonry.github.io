@@ -80,7 +80,43 @@ img{ max-width:100%; height:auto; display:block; }
 .hero-content{ position:absolute; inset:0; display:grid; place-content:center; text-align:center; color:#fff; padding-inline:1rem; }
 .hero h1{ font-size: clamp(2rem, 5vw, 3.25rem); margin:0 0 .5rem; }
 .hero p{ max-width:52ch; margin:0 auto 1.25rem; font-size: clamp(1rem, 2.2vw, 1.15rem); }
-.hero-ctas{ display:flex; gap:.75rem; justify-content:center; flex-wrap:wrap; }
+.hero-ctas{ display:flex; gap:.9rem; justify-content:center; flex-wrap:wrap; }
+
+/* ===== Buttons (robust) ===== */
+.btn, a.btn, button.btn{
+  --_bg:#eaeaea;           /* default background fallback */
+  --_fg:var(--charcoal);   /* default text color fallback */
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.5rem;
+  padding:.8rem 1.1rem;
+  border-radius:999px;
+  border:2px solid transparent;
+  text-decoration:none !important;    /* prevent underlines no matter what */
+  font-weight:700;
+  letter-spacing:.2px;
+  line-height:1.1;
+  cursor:pointer;
+  background: var(--_bg);
+  color: var(--_fg);
+  transition: background .2s, color .2s, border-color .2s, transform .02s;
+}
+a.btn:visited{ color: var(--_fg); }
+.btn:active{ transform: translateY(1px); }
+
+.btn-primary, a.btn-primary, button.btn-primary{
+  --_bg: var(--brick);
+  --_fg: #fff;
+}
+.btn-primary:hover{ background: var(--brick-700); }
+
+.btn-ghost, a.btn-ghost, button.btn-ghost{
+  --_bg: rgba(255,255,255,.1);
+  --_fg: #fff;
+  border-color: rgba(255,255,255,.35);
+}
+.btn-ghost:hover{ --_bg: rgba(255,255,255,.18); }
 
 /* ===== Language switch ===== */
 .lang .wrapper{ display:flex; justify-content:center; }
