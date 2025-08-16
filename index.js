@@ -15,6 +15,17 @@ navToggle?.addEventListener('click', () => setNav(!body.classList.contains('nav-
 nav?.addEventListener('click', (e) => { if (e.target.closest('.nav-link')) setNav(false); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setNav(false); });
 
+// Auto-close dropdown if user starts scrolling (prevents odd positions)
+let closedOnScroll = false;
+window.addEventListener('scroll', () => {
+  if (body.classList.contains('nav-open')) {
+    setNav(false);
+    closedOnScroll = true;
+  } else if (closedOnScroll && window.scrollY < 4) {
+    closedOnScroll = false;
+  }
+}, { passive: true });
+
 // Header shadow after scroll
 const shadow = () => header?.classList.toggle('scrolled', window.scrollY > 4);
 shadow();
