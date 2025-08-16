@@ -11,8 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
-  <!-- Cache-bust to beat aggressive hosting caches -->
-  <link rel="stylesheet" href="styles.css?v=4" />
+  <!-- Cache-bust -->
+  <link rel="stylesheet" href="styles.css?v=5" />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -29,6 +29,7 @@
         <span></span><span></span><span></span>
       </button>
 
+      <!-- Compact dropdown on mobile -->
       <nav id="primary-nav" class="primary-nav" aria-label="Primary" aria-hidden="true">
         <ul>
           <li><a class="nav-link" href="#home">Home</a></li>
@@ -44,7 +45,6 @@
     <!-- HERO -->
     <section id="home" class="section hero" aria-label="Hero">
       <picture>
-        <!-- Swap these paths to your actual images -->
         <source media="(min-width: 1024px)" srcset="images/hero-large.jpg" />
         <img src="images/hero-mobile.jpg" alt="Bricklayer placing a cornerstone" />
       </picture>
@@ -100,7 +100,6 @@
 
         <div class="carousel" role="region" aria-roledescription="carousel" aria-label="Corner Stone Masonry recent projects">
           <div class="carousel-viewport" id="carousel" tabindex="0">
-            <!-- Slides (keep ratio consistent; swap file paths for your images) -->
             <figure class="slide">
               <img loading="lazy" src="images/gallery/01.jpg" alt="New brick steps with stone cap in Springfield, IL" />
               <figcaption>Brick steps • Springfield</figcaption>
@@ -127,7 +126,6 @@
             </figure>
           </div>
 
-          <!-- Prev/Next controls -->
           <button class="carousel-btn prev" aria-label="Previous slide" aria-controls="carousel">‹</button>
           <button class="carousel-btn next" aria-label="Next slide" aria-controls="carousel">›</button>
         </div>
@@ -216,6 +214,6 @@
   </script>
 
   <noscript>Your browser has JavaScript disabled; navigation and form enhancements are limited.</noscript>
-  <script src="index.js?v=4" defer></script>
+  <script src="index.js?v=5" defer></script>
 </body>
 </html>
