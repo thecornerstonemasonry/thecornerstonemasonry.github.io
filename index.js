@@ -213,6 +213,72 @@ document.querySelectorAll('.lang-switch [data-lang]').forEach(btn => {
 // Init
 setLang(localStorage.getItem('site-lang') || 'en');
 
+/* ===== i18n helpers (unchanged) ===== */
+function applyLang(lang){
+  const dict = i18n[lang] || i18n.en;
+  document.documentElement.lang = lang === 'es' ? 'es' : 'en';
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (key in dict) el.textContent = dict[key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (key in dict) el.setAttribute('placeholder', dict[key]);
+  });
+  document.querySelectorAll('[data-i18n-aria-label]').forEach(el => {
+    const key = el.getAttribute('data-i18n-aria-label');
+    if (key in dict) el.setAttribute('aria-label', dict[key]);
+  });
+}
+
+/* ===== language setters with fade ===== */
+function setLang(lang, opts = { animate: true }){
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const container = document.getElementById('main');
+
+  const updateUI = () => {
+    localStorage.setItem('site-lang', lang);
+    applyLang(lang);
+    // toggle button states
+    document.querySelectorAll('.lang-switch [data-lang]').forEach(btn => {
+      const active = btn.getAttribute('data-lang') === lang;
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-pressed', String(active));
+    });
+  };
+
+  if (!opts.animate || prefersReduced || !container){
+    updateUI();
+    return;
+  }
+
+  // fade out -> swap text -> fade in
+  container.classList.add('is-fading');
+  let done = false;
+
+  const onEnd = (e) => {
+    if (e && e.propertyName !== 'opacity') return;
+    if (done) return;
+    done = true;
+    container.removeEventListener('transitionend', onEnd);
+    updateUI();
+    requestAnimationFrame(() => container.classList.remove('is-fading'));
+  };
+
+  container.addEventListener('transitionend', onEnd);
+  // Fallback in case transitionend doesn’t fire
+  setTimeout(onEnd, 500);
+}
+
+/* Wire buttons */
+document.querySelectorAll('.lang-switch [data-lang]').forEach(btn => {
+  btn.addEventListener('click', () => setLang(btn.getAttribute('data-lang'), { animate: true }));
+});
+
+/* Init without animation */
+setLang(localStorage.getItem('site-lang') || 'en', { animate: false });
+
 // ===== Form placeholder UX =====
 const form = document.getElementById('contact-form');
 const note = document.getElementById('form-note');
