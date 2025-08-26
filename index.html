@@ -7,17 +7,14 @@
   <meta name="theme-color" content="#6e1b1b" />
   <title>The Corner Stone Masonry</title>
 
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
-  <!-- Cache-bust -->
-  <link rel="stylesheet" href="styles.css?v=7" />
+  <link rel="stylesheet" href="styles.css?v=9" />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <!-- Sticky header / nav -->
   <header class="site-header">
     <div class="wrapper nav-wrapper">
       <a class="brand" href="#home" aria-label="The Corner Stone Masonry home">
@@ -29,7 +26,6 @@
         <span></span><span></span><span></span>
       </button>
 
-      <!-- Compact dropdown on mobile; anchored to header wrapper -->
       <nav id="primary-nav" class="primary-nav" aria-label="Primary" aria-hidden="true">
         <ul>
           <li><a class="nav-link" href="#home" data-i18n="nav.home">Home</a></li>
@@ -41,7 +37,8 @@
     </div>
   </header>
 
-  <main id="main">
+  <!-- NOTE: added class "lang-fade" to enable the language transition -->
+  <main id="main" class="lang-fade">
     <!-- HERO -->
     <section id="home" class="section hero" aria-label="Hero">
       <picture>
@@ -59,7 +56,7 @@
       </div>
     </section>
 
-    <!-- LANGUAGE SWITCH (centered) -->
+    <!-- LANGUAGE SWITCH -->
     <section class="section lang" aria-label="Language switch">
       <div class="wrapper">
         <div class="lang-switch" role="group" aria-label="Language">
@@ -102,7 +99,7 @@
       </div>
     </section>
 
-    <!-- GALLERY / RECENT WORK -->
+    <!-- GALLERY -->
     <section id="gallery" class="section gallery" aria-label="Recent work">
       <div class="wrapper">
         <h2 class="section-title" data-i18n="gallery.title">Recent Work</h2>
@@ -208,22 +205,6 @@
     </div>
   </footer>
 
-  <!-- LocalBusiness schema (unchanged) -->
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"LocalBusiness",
-    "name":"The Corner Stone Masonry LLC",
-    "url":"https://thecornerstonemasonry.net",
-    "telephone":"+1-217-555-0123",
-    "areaServed":"Central Illinois",
-    "image":"https://thecornerstonemasonry.net/images/hero-large.jpg",
-    "priceRange":"$$",
-    "sameAs":["https://www.facebook.com/jesus.game.king/"]
-  }
-  </script>
-
-  <noscript>Your browser has JavaScript disabled; navigation and form enhancements are limited.</noscript>
-  <script src="index.js?v=7" defer></script>
+  <script src="index.js?v=9" defer></script>
 </body>
 </html>
