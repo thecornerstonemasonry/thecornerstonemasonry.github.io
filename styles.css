@@ -203,3 +203,10 @@ form{ background:var(--sand); padding:1rem; border-radius:var(--radius); box-sha
 #home, #about, #services, #gallery, #testimonials, #contact{
   scroll-margin-top: calc(var(--header-h) + 12px);
 }
+
+/* === Language fade effect === */
+.lang-fade { opacity: 1; transition: opacity .35s ease; }
+.lang-fade.is-fading { opacity: 0; pointer-events: none; }
+@media (prefers-reduced-motion: reduce){
+  .lang-fade { transition: none; }
+}
