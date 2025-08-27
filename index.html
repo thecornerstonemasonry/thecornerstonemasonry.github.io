@@ -10,8 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
-  <!-- Keep your current CSS version if you haven’t changed it -->
-  <link rel="stylesheet" href="styles.css?v=9" />
+  <link rel="stylesheet" href="styles.css?v=11" />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -164,19 +163,20 @@
           </ul>
         </div>
 
+        <!-- Keep novalidate; we do explicit validity checks in JS -->
         <form id="contact-form" novalidate>
           <div class="form-grid">
             <label class="sr-only" for="first" data-i18n="form.firstLabel">First name</label>
             <input id="first" name="first" type="text" placeholder="First name" required data-i18n-placeholder="form.firstPh">
 
             <label class="sr-only" for="last" data-i18n="form.lastLabel">Last name</label>
-            <input id="last" name="last" type="text" placeholder="Last name" required data-i18n-placeholder="form.lastPh">
+            <input id="last" name="last" type="text" placeholder="Last name" data-i18n-placeholder="form.lastPh">
 
             <label class="sr-only" for="email" data-i18n="form.emailLabel">Email</label>
-            <input id="email" name="email" type="email" placeholder="Email" required data-i18n-placeholder="form.emailPh">
+            <input id="email" name="email" type="email" placeholder="Email" data-i18n-placeholder="form.emailPh">
 
             <label class="sr-only" for="phone" data-i18n="form.phoneLabel">Phone</label>
-            <input id="phone" name="phone" type="tel" placeholder="Phone" inputmode="tel" pattern="[0-9\\-\\+\\(\\) ]*" data-i18n-placeholder="form.phonePh">
+            <input id="phone" name="phone" type="tel" placeholder="Phone" inputmode="tel" pattern="[0-9\\-\\+\\(\\) ]*" required data-i18n-placeholder="form.phonePh">
 
             <label class="sr-only" for="location" data-i18n="form.locationLabel">Project location</label>
             <input id="location" name="location" type="text" placeholder="Project location (city)" data-i18n-placeholder="form.locationPh">
@@ -206,7 +206,6 @@
     </div>
   </footer>
 
-  <!-- Bumped JS to v=10 -->
-  <script src="index.js?v=10" defer></script>
+  <script src="index.js?v=11" defer></script>
 </body>
 </html>
