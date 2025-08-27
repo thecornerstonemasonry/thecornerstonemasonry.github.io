@@ -1,43 +1,49 @@
-// ===== NAV (compact dropdown + scroll lock) =====
+/* ===== NAV — compact dropdown, NO scroll-lock ===== */
 const body = document.body;
 const header = document.querySelector('.site-header');
 const navToggle = document.querySelector('.nav-toggle');
 const nav = document.querySelector('.primary-nav');
 const links = [...document.querySelectorAll('.nav-link')];
 
-let scrollLockY = 0;
-function lockScroll() {
-  scrollLockY = window.scrollY || document.documentElement.scrollTop || 0;
-  body.style.position = 'fixed';
-  body.style.top = `-${scrollLockY}px`;
-  body.style.left = '0';
-  body.style.right = '0';
-  body.style.width = '100%';
-}
-function unlockScroll() {
-  body.style.position = '';
-  body.style.top = '';
-  body.style.left = '';
-  body.style.right = '';
-  body.style.width = '';
-  window.scrollTo(0, scrollLockY);
-}
 function setNav(open){
   if(!nav || !navToggle) return;
-  if (open) lockScroll(); else unlockScroll();
   body.classList.toggle('nav-open', open);
   navToggle.setAttribute('aria-expanded', String(open));
   nav.setAttribute('aria-hidden', String(!open));
 }
-navToggle?.addEventListener('click', (e) => { e.preventDefault(); setNav(!body.classList.contains('nav-open')); });
-nav?.addEventListener('click', (e) => { if (e.target.closest('.nav-link')) setNav(false); });
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setNav(false); });
 
-// Header shadow
+// Toggle open/close
+navToggle?.addEventListener('click', (e) => {
+  e.preventDefault();
+  setNav(!body.classList.contains('nav-open'));
+});
+
+// Close on nav link click
+nav?.addEventListener('click', (e) => {
+  if (e.target.closest('.nav-link')) setNav(false);
+});
+
+// Auto-close menu when user scrolls (prevents odd states on mobile)
+let lastY = window.scrollY;
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  if (body.classList.contains('nav-open') && Math.abs(y - lastY) > 1) {
+    setNav(false);
+  }
+  lastY = y;
+}, { passive: true });
+
+// Close menu if resizing to desktop while open
+window.addEventListener('resize', () => {
+  if (window.innerWidth >= 821 && body.classList.contains('nav-open')) setNav(false);
+}, { passive: true });
+
+// Header shadow after scroll
 const shadow = () => header?.classList.toggle('scrolled', window.scrollY > 4);
-shadow(); window.addEventListener('scroll', shadow, { passive: true });
+shadow();
+window.addEventListener('scroll', shadow, { passive: true });
 
-// Active link highlight
+// Active link highlighting on scroll
 const sections = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
 if (sections.length){
   const io = new IntersectionObserver((entries) => {
@@ -49,20 +55,20 @@ if (sections.length){
   }, { rootMargin: '-45% 0px -50% 0px', threshold: 0.01 });
   sections.forEach(sec => io.observe(sec));
 }
-// Close menu if resizing to desktop while open
-window.addEventListener('resize', () => {
-  if (window.innerWidth >= 821 && body.classList.contains('nav-open')) setNav(false);
-}, { passive: true });
 
-// ===== BACK TO TOP =====
+// ESC to close
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setNav(false); });
+
+/* ===== BACK TO TOP ===== */
 document.getElementById('back-to-top')?.addEventListener('click', () => {
   if (window.scrollY < 10) window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-// ===== GALLERY (Carousel) =====
+/* ===== GALLERY (Carousel) ===== */
 (() => {
   const viewport = document.getElementById('carousel');
   if (!viewport) return;
+
   const slides = [...viewport.querySelectorAll('.slide')];
   const prevBtn = document.querySelector('.carousel-btn.prev');
   const nextBtn = document.querySelector('.carousel-btn.next');
@@ -72,7 +78,10 @@ document.getElementById('back-to-top')?.addEventListener('click', () => {
 
   const width = () => viewport.clientWidth;
   const clamp = (i) => Math.max(0, Math.min(i, slides.length - 1));
-  const goTo = (i) => { index = clamp(i); viewport.scrollTo({ left: index * width(), behavior: 'smooth' }); };
+  const goTo = (i) => {
+    index = clamp(i);
+    viewport.scrollTo({ left: index * width(), behavior: 'smooth' });
+  };
   const next = () => goTo(index + 1);
   const prev = () => goTo(index - 1);
 
@@ -102,10 +111,10 @@ document.getElementById('back-to-top')?.addEventListener('click', () => {
   document.addEventListener('visibilitychange', () => document.hidden ? stopAuto() : startAuto());
 })();
 
-// ===== YEAR =====
+/* ===== YEAR ===== */
 const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
 
-/* ========= I18N ========= */
+/* ===== I18N ===== */
 const i18n = {
   en: {
     'nav.home': 'Home', 'nav.about': 'About', 'nav.services': 'Services', 'nav.contact': 'Contact',
@@ -175,49 +184,6 @@ function applyLang(lang){
   const dict = i18n[lang] || i18n.en;
   document.documentElement.lang = lang === 'es' ? 'es' : 'en';
 
-  // Text nodes
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (key in dict) el.textContent = dict[key];
-  });
-
-  // Placeholders
-  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-    const key = el.getAttribute('data-i18n-placeholder');
-    if (key in dict) el.setAttribute('placeholder', dict[key]);
-  });
-
-  // (If needed) aria-labels
-  document.querySelectorAll('[data-i18n-aria-label]').forEach(el => {
-    const key = el.getAttribute('data-i18n-aria-label');
-    if (key in dict) el.setAttribute('aria-label', dict[key]);
-  });
-}
-
-function setLang(lang){
-  localStorage.setItem('site-lang', lang);
-  applyLang(lang);
-  // Toggle button UI
-  document.querySelectorAll('.lang-switch [data-lang]').forEach(btn => {
-    const active = btn.getAttribute('data-lang') === lang;
-    btn.classList.toggle('is-active', active);
-    btn.setAttribute('aria-pressed', String(active));
-  });
-}
-
-// Wire the buttons
-document.querySelectorAll('.lang-switch [data-lang]').forEach(btn => {
-  btn.addEventListener('click', () => setLang(btn.getAttribute('data-lang')));
-});
-
-// Init
-setLang(localStorage.getItem('site-lang') || 'en');
-
-/* ===== i18n helpers (unchanged) ===== */
-function applyLang(lang){
-  const dict = i18n[lang] || i18n.en;
-  document.documentElement.lang = lang === 'es' ? 'es' : 'en';
-
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     if (key in dict) el.textContent = dict[key];
@@ -232,7 +198,7 @@ function applyLang(lang){
   });
 }
 
-/* ===== language setters with fade ===== */
+/* Language change with fade (as before) */
 function setLang(lang, opts = { animate: true }){
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const container = document.getElementById('main');
@@ -240,7 +206,6 @@ function setLang(lang, opts = { animate: true }){
   const updateUI = () => {
     localStorage.setItem('site-lang', lang);
     applyLang(lang);
-    // toggle button states
     document.querySelectorAll('.lang-switch [data-lang]').forEach(btn => {
       const active = btn.getAttribute('data-lang') === lang;
       btn.classList.toggle('is-active', active);
@@ -253,12 +218,11 @@ function setLang(lang, opts = { animate: true }){
     return;
   }
 
-  // fade out -> swap text -> fade in
   container.classList.add('is-fading');
   let done = false;
 
   const onEnd = (e) => {
-    if (e && e.propertyName !== 'opacity') return;
+    if (e && e.propertyName && e.propertyName !== 'opacity') return;
     if (done) return;
     done = true;
     container.removeEventListener('transitionend', onEnd);
@@ -267,19 +231,17 @@ function setLang(lang, opts = { animate: true }){
   };
 
   container.addEventListener('transitionend', onEnd);
-  // Fallback in case transitionend doesn’t fire
-  setTimeout(onEnd, 500);
+  setTimeout(onEnd, 500); // fallback
 }
 
-/* Wire buttons */
 document.querySelectorAll('.lang-switch [data-lang]').forEach(btn => {
   btn.addEventListener('click', () => setLang(btn.getAttribute('data-lang'), { animate: true }));
 });
 
-/* Init without animation */
+// Init without animation
 setLang(localStorage.getItem('site-lang') || 'en', { animate: false });
 
-// ===== Form placeholder UX =====
+/* ===== Form placeholder UX ===== */
 const form = document.getElementById('contact-form');
 const note = document.getElementById('form-note');
 form?.addEventListener('submit', (e) => {
