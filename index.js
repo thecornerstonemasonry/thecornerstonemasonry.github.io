@@ -12,38 +12,27 @@ function setNav(open){
   nav.setAttribute('aria-hidden', String(!open));
 }
 
-// Toggle open/close
 navToggle?.addEventListener('click', (e) => {
   e.preventDefault();
   setNav(!body.classList.contains('nav-open'));
 });
+nav?.addEventListener('click', (e) => { if (e.target.closest('.nav-link')) setNav(false); });
 
-// Close on nav link click
-nav?.addEventListener('click', (e) => {
-  if (e.target.closest('.nav-link')) setNav(false);
-});
-
-// Auto-close menu when user scrolls (prevents odd states on mobile)
 let lastY = window.scrollY;
 window.addEventListener('scroll', () => {
   const y = window.scrollY;
-  if (body.classList.contains('nav-open') && Math.abs(y - lastY) > 1) {
-    setNav(false);
-  }
+  if (body.classList.contains('nav-open') && Math.abs(y - lastY) > 1) setNav(false);
   lastY = y;
 }, { passive: true });
 
-// Close menu if resizing to desktop while open
 window.addEventListener('resize', () => {
   if (window.innerWidth >= 821 && body.classList.contains('nav-open')) setNav(false);
 }, { passive: true });
 
-// Header shadow after scroll
 const shadow = () => header?.classList.toggle('scrolled', window.scrollY > 4);
 shadow();
 window.addEventListener('scroll', shadow, { passive: true });
 
-// Active link highlighting on scroll
 const sections = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
 if (sections.length){
   const io = new IntersectionObserver((entries) => {
@@ -55,8 +44,6 @@ if (sections.length){
   }, { rootMargin: '-45% 0px -50% 0px', threshold: 0.01 });
   sections.forEach(sec => io.observe(sec));
 }
-
-// ESC to close
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setNav(false); });
 
 /* ===== BACK TO TOP ===== */
@@ -78,26 +65,23 @@ document.getElementById('back-to-top')?.addEventListener('click', () => {
 
   const width = () => viewport.clientWidth;
   const clamp = (i) => Math.max(0, Math.min(i, slides.length - 1));
-  const goTo = (i) => {
-    index = clamp(i);
-    viewport.scrollTo({ left: index * width(), behavior: 'smooth' });
-  };
+  const goTo = (i) => { index = clamp(i); viewport.scrollTo({ left: index * width(), behavior: 'smooth' }); };
   const next = () => goTo(index + 1);
   const prev = () => goTo(index - 1);
 
   nextBtn?.addEventListener('click', () => { userInteracted = true; next(); });
   prevBtn?.addEventListener('click', () => { userInteracted = true; prev(); });
 
-  viewport.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') { userInteracted = true; next(); }
-    if (e.key === 'ArrowLeft')  { userInteracted = true; prev(); }
-  });
-
   let t;
   viewport.addEventListener('scroll', () => {
     clearTimeout(t);
     t = setTimeout(() => { index = Math.round(viewport.scrollLeft / width()); }, 100);
   }, { passive: true });
+
+  viewport.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { userInteracted = true; next(); }
+    if (e.key === 'ArrowLeft')  { userInteracted = true; prev(); }
+  });
 
   window.addEventListener('resize', () => goTo(index), { passive: true });
 
@@ -114,7 +98,7 @@ document.getElementById('back-to-top')?.addEventListener('click', () => {
 /* ===== YEAR ===== */
 const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
 
-/* ===== I18N ===== */
+/* ===== I18N DICTS ===== */
 const i18n = {
   en: {
     'nav.home': 'Home', 'nav.about': 'About', 'nav.services': 'Services', 'nav.contact': 'Contact',
@@ -198,7 +182,7 @@ function applyLang(lang){
   });
 }
 
-/* Language change with fade (as before) */
+/* Language change with fade */
 function setLang(lang, opts = { animate: true }){
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const container = document.getElementById('main');
@@ -220,7 +204,6 @@ function setLang(lang, opts = { animate: true }){
 
   container.classList.add('is-fading');
   let done = false;
-
   const onEnd = (e) => {
     if (e && e.propertyName && e.propertyName !== 'opacity') return;
     if (done) return;
@@ -229,7 +212,6 @@ function setLang(lang, opts = { animate: true }){
     updateUI();
     requestAnimationFrame(() => container.classList.remove('is-fading'));
   };
-
   container.addEventListener('transitionend', onEnd);
   setTimeout(onEnd, 500); // fallback
 }
@@ -237,17 +219,25 @@ function setLang(lang, opts = { animate: true }){
 document.querySelectorAll('.lang-switch [data-lang]').forEach(btn => {
   btn.addEventListener('click', () => setLang(btn.getAttribute('data-lang'), { animate: true }));
 });
-
-// Init without animation
 setLang(localStorage.getItem('site-lang') || 'en', { animate: false });
 
-/* ===== Form placeholder UX ===== */
+/* ===== Form UX: validate required fields, center note ===== */
 const form = document.getElementById('contact-form');
 const note = document.getElementById('form-note');
 form?.addEventListener('submit', (e) => {
   e.preventDefault();
-  form.reset();
+
+  // Respect HTML5 constraints: First, Phone, Message are required
+  if (!form.checkValidity()) {
+    form.reportValidity(); // shows native validation messages
+    return;
+  }
+
   const lang = localStorage.getItem('site-lang') || 'en';
-  note.textContent = lang === 'es' ? '¡Gracias! Te contactaremos pronto.' : 'Thanks! We will get back to you shortly.';
+  note.textContent = lang === 'es'
+    ? '¡Gracias! Te contactaremos pronto.'
+    : 'Thanks! We will get back to you shortly.';
   note.style.color = 'green';
+
+  form.reset();
 });
