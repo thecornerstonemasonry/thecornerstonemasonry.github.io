@@ -51,45 +51,109 @@ document.getElementById('back-to-top')?.addEventListener('click', () => {
   if (window.scrollY < 10) window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-/* ===== GALLERY (Carousel) ===== */
+/* ===== GALLERY (Carousel) — TRUE infinite swiping ===== */
 (() => {
   const viewport = document.getElementById('carousel');
   if (!viewport) return;
 
-  const slides = [...viewport.querySelectorAll('.slide')];
-  const prevBtn = document.querySelector('.carousel-btn.prev');
-  const nextBtn = document.querySelector('.carousel-btn.next');
+  // 1) Clone edges
+  const realSlides = [...viewport.querySelectorAll('.slide')];
+  const realCount = realSlides.length;
+  if (realCount < 2) return; // nothing to loop
 
-  let index = 0;
+  const firstClone = realSlides[0].cloneNode(true);
+  const lastClone  = realSlides[realCount - 1].cloneNode(true);
+  [firstClone, lastClone].forEach(c => {
+    c.classList.add('clone');
+    c.setAttribute('aria-hidden', 'true');
+    c.tabIndex = -1;
+  });
+
+  viewport.insertBefore(lastClone, viewport.firstElementChild);
+  viewport.appendChild(firstClone);
+
+  // Now slides = [lastClone, real1, real2, ..., realN, firstClone]
+  const slides = () => [...viewport.querySelectorAll('.slide')];
+  const firstRealIndex = 1;
+  const lastRealIndex  = realCount;
+
+  let index = firstRealIndex;      // current "virtual" index in slides()
   let userInteracted = false;
 
   const width = () => viewport.clientWidth;
-  const clamp = (i) => Math.max(0, Math.min(i, slides.length - 1));
-  const goTo = (i) => { index = clamp(i); viewport.scrollTo({ left: index * width(), behavior: 'smooth' }); };
+
+  const jumpTo = (i) => {
+    index = i;
+    viewport.scrollTo({ left: index * width(), behavior: 'auto' });
+  };
+  const goTo = (i, smooth = true) => {
+    index = i;
+    viewport.scrollTo({ left: index * width(), behavior: smooth ? 'smooth' : 'auto' });
+  };
+
+  // 2) Initialize at first real slide (avoid flashing at clone)
+  const init = () => {
+    jumpTo(firstRealIndex);
+  };
+  // Ensure images/layout measured
+  if (document.readyState === 'complete') {
+    requestAnimationFrame(init);
+  } else {
+    window.addEventListener('load', () => requestAnimationFrame(init), { once: true });
+  }
+
+  // 3) Controls — wrap using the virtual indices (clones included)
+  const prevBtn = document.querySelector('.carousel-btn.prev');
+  const nextBtn = document.querySelector('.carousel-btn.next');
+
   const next = () => goTo(index + 1);
   const prev = () => goTo(index - 1);
 
   nextBtn?.addEventListener('click', () => { userInteracted = true; next(); });
   prevBtn?.addEventListener('click', () => { userInteracted = true; prev(); });
 
-  let t;
-  viewport.addEventListener('scroll', () => {
-    clearTimeout(t);
-    t = setTimeout(() => { index = Math.round(viewport.scrollLeft / width()); }, 100);
-  }, { passive: true });
-
   viewport.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight') { userInteracted = true; next(); }
     if (e.key === 'ArrowLeft')  { userInteracted = true; prev(); }
   });
 
-  window.addEventListener('resize', () => goTo(index), { passive: true });
+  // 4) Seamless wrap on scroll end (debounced)
+  let t;
+  const onScrollEnd = () => {
+    const w = width();
+    if (!w) return;
+    // snap to nearest slide index
+    const approx = Math.round(viewport.scrollLeft / w);
+    index = approx;
 
+    if (index === 0) {
+      // Landed on leading clone -> jump to last real
+      jumpTo(lastRealIndex);
+    } else if (index === lastRealIndex + 1) {
+      // Landed on trailing clone -> jump to first real
+      jumpTo(firstRealIndex);
+    }
+  };
+
+  viewport.addEventListener('scroll', () => {
+    clearTimeout(t);
+    t = setTimeout(onScrollEnd, 120);
+  }, { passive: true });
+
+  // Keep current logical slide centered on resize
+  window.addEventListener('resize', () => jumpTo(index), { passive: true });
+
+  // 5) Auto-advance (loops forever)
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let auto;
-  const startAuto = () => { if (prefersReduced) return; stopAuto(); auto = setInterval(() => { if (!userInteracted) next(); }, 5000); };
-  const stopAuto  = () => { if (auto) clearInterval(auto); };
+  const startAuto = () => {
+    if (prefersReduced) return;
+    stopAuto();
+    auto = setInterval(() => { if (!userInteracted) next(); }, 5000);
+  };
+  const stopAuto = () => { if (auto) clearInterval(auto); };
   startAuto();
+
   ['pointerenter', 'focusin'].forEach(ev => viewport.addEventListener(ev, stopAuto));
   ['pointerleave', 'focusout'].forEach(ev => viewport.addEventListener(ev, startAuto));
   document.addEventListener('visibilitychange', () => document.hidden ? stopAuto() : startAuto());
@@ -227,9 +291,8 @@ const note = document.getElementById('form-note');
 form?.addEventListener('submit', (e) => {
   e.preventDefault();
 
-  // Respect HTML5 constraints: First, Phone, Message are required
   if (!form.checkValidity()) {
-    form.reportValidity(); // shows native validation messages
+    form.reportValidity();
     return;
   }
 
