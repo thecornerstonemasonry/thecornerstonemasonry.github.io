@@ -51,16 +51,17 @@ document.getElementById('back-to-top')?.addEventListener('click', () => {
   if (window.scrollY < 10) window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-/* ===== GALLERY (Carousel) — TRUE infinite swiping ===== */
+/* ===== GALLERY (Carousel) — TRUE infinite swiping, robust ===== */
 (() => {
   const viewport = document.getElementById('carousel');
   if (!viewport) return;
 
-  // 1) Clone edges
+  // Save original slides
   const realSlides = [...viewport.querySelectorAll('.slide')];
   const realCount = realSlides.length;
-  if (realCount < 2) return; // nothing to loop
+  if (realCount < 2) return;
 
+  // Clone edges
   const firstClone = realSlides[0].cloneNode(true);
   const lastClone  = realSlides[realCount - 1].cloneNode(true);
   [firstClone, lastClone].forEach(c => {
@@ -68,82 +69,105 @@ document.getElementById('back-to-top')?.addEventListener('click', () => {
     c.setAttribute('aria-hidden', 'true');
     c.tabIndex = -1;
   });
-
   viewport.insertBefore(lastClone, viewport.firstElementChild);
   viewport.appendChild(firstClone);
 
-  // Now slides = [lastClone, real1, real2, ..., realN, firstClone]
+  // Virtual indices (with clones)
+  const firstRealIndex = 1;             // [clone,last] , real1 , ... , realN , [clone,first]
+  const lastRealIndex  = realCount;     // last real slide index in virtual list
+
   const slides = () => [...viewport.querySelectorAll('.slide')];
-  const firstRealIndex = 1;
-  const lastRealIndex  = realCount;
+  const width  = () => viewport.clientWidth;
 
-  let index = firstRealIndex;      // current "virtual" index in slides()
-  let userInteracted = false;
+  // Scrolling helpers
+  let index = firstRealIndex;           // current virtual index
+  const jumpTo = (i) => { index = i; viewport.scrollTo({ left: index * width(), behavior: 'auto' }); };
+  const goTo   = (i, smooth = true) => { index = i; viewport.scrollTo({ left: index * width(), behavior: smooth ? 'smooth' : 'auto' }); };
 
-  const width = () => viewport.clientWidth;
-
-  const jumpTo = (i) => {
-    index = i;
-    viewport.scrollTo({ left: index * width(), behavior: 'auto' });
-  };
-  const goTo = (i, smooth = true) => {
-    index = i;
-    viewport.scrollTo({ left: index * width(), behavior: smooth ? 'smooth' : 'auto' });
-  };
-
-  // 2) Initialize at first real slide (avoid flashing at clone)
-  const init = () => {
+  // Initialize at first real slide; repeat to defeat late layout shifts
+  const initPosition = () => {
     jumpTo(firstRealIndex);
+    // safety: re-assert after next frame & small delay
+    requestAnimationFrame(() => jumpTo(firstRealIndex));
+    setTimeout(() => jumpTo(firstRealIndex), 120);
   };
-  // Ensure images/layout measured
-  if (document.readyState === 'complete') {
-    requestAnimationFrame(init);
-  } else {
-    window.addEventListener('load', () => requestAnimationFrame(init), { once: true });
-  }
+  if (document.readyState === 'complete') initPosition();
+  else window.addEventListener('load', initPosition, { once: true });
 
-  // 3) Controls — wrap using the virtual indices (clones included)
+  // Controls
   const prevBtn = document.querySelector('.carousel-btn.prev');
   const nextBtn = document.querySelector('.carousel-btn.next');
-
   const next = () => goTo(index + 1);
   const prev = () => goTo(index - 1);
 
   nextBtn?.addEventListener('click', () => { userInteracted = true; next(); });
   prevBtn?.addEventListener('click', () => { userInteracted = true; prev(); });
-
   viewport.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight') { userInteracted = true; next(); }
     if (e.key === 'ArrowLeft')  { userInteracted = true; prev(); }
   });
 
-  // 4) Seamless wrap on scroll end (debounced)
-  let t;
-  const onScrollEnd = () => {
+  // Track direction + settle detection
+  let lastSL = viewport.scrollLeft;
+  let dir = 0; // -1 left, 1 right
+  let debounce;
+  const settle = () => {
     const w = width();
     if (!w) return;
-    // snap to nearest slide index
-    const approx = Math.round(viewport.scrollLeft / w);
-    index = approx;
 
-    if (index === 0) {
-      // Landed on leading clone -> jump to last real
+    const sl = viewport.scrollLeft;
+    const idxFloat = sl / w;
+    const approx   = Math.round(idxFloat);
+
+    // If actually on clones -> instant wrap
+    if (approx === 0 || idxFloat < 0.5) {
       jumpTo(lastRealIndex);
-    } else if (index === lastRealIndex + 1) {
-      // Landed on trailing clone -> jump to first real
-      jumpTo(firstRealIndex);
+      return;
     }
+    if (approx === lastRealIndex + 1 || idxFloat > lastRealIndex + 0.5) {
+      jumpTo(firstRealIndex);
+      return;
+    }
+
+    // If browser clamps at physical ends (can't land on clones), manually wrap
+    const maxSL = lastRealIndex * w;
+    const epsilon = w * 0.02; // 2% of viewport width
+    if (dir > 0 && (maxSL - sl) <= epsilon) { // trying to go past last real
+      jumpTo(firstRealIndex);
+      return;
+    }
+    if (dir < 0 && sl <= epsilon) { // trying to go before first real
+      jumpTo(lastRealIndex);
+      return;
+    }
+
+    // Otherwise, snap index to nearest real slide for internal state
+    index = Math.min(Math.max(approx, firstRealIndex), lastRealIndex);
   };
 
   viewport.addEventListener('scroll', () => {
-    clearTimeout(t);
-    t = setTimeout(onScrollEnd, 120);
+    const sl = viewport.scrollLeft;
+    dir = Math.sign(sl - lastSL) || dir;
+    lastSL = sl;
+    clearTimeout(debounce);
+    debounce = setTimeout(settle, 120); // fallback settle
   }, { passive: true });
+
+  // Prefer scrollend when available
+  if ('onscrollend' in window || 'onscrollend' in viewport) {
+    viewport.addEventListener('scrollend', settle);
+  }
+
+  // Also run on pointer/touch end (some browsers fire no scrollend)
+  ['pointerup', 'touchend', 'mouseup'].forEach(ev => {
+    viewport.addEventListener(ev, () => setTimeout(settle, 30), { passive: true });
+  });
 
   // Keep current logical slide centered on resize
   window.addEventListener('resize', () => jumpTo(index), { passive: true });
 
-  // 5) Auto-advance (loops forever)
+  // Auto-advance (loops forever)
+  let userInteracted = false;
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let auto;
   const startAuto = () => {
@@ -153,7 +177,6 @@ document.getElementById('back-to-top')?.addEventListener('click', () => {
   };
   const stopAuto = () => { if (auto) clearInterval(auto); };
   startAuto();
-
   ['pointerenter', 'focusin'].forEach(ev => viewport.addEventListener(ev, stopAuto));
   ['pointerleave', 'focusout'].forEach(ev => viewport.addEventListener(ev, startAuto));
   document.addEventListener('visibilitychange', () => document.hidden ? stopAuto() : startAuto());
